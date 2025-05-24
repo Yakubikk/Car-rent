@@ -1,10 +1,8 @@
-using Microsoft.AspNetCore.Identity;
-
-namespace car_rent_back.Models;
-
-public class ApplicationUser : IdentityUser
+public class RegisterDto
 {
-    // Дополнительные поля для пользователя каршеринга
+    public string Email { get; set; }
+    public string Password { get; set; }
+    
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string PassportNumber { get; set; }

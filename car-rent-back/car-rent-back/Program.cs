@@ -6,8 +6,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Добавляем контекст базы данных для PostgreSQL
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
-                       throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
@@ -29,15 +28,18 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.WithOrigins("http://localhost:5173") // Указываем конкретный источник фронтенда
+        policy
+            .WithOrigins("http://localhost:5173")
             .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials(); // Разрешаем запросы с учетными данными
+            .AllowAnyHeader();
     });
 });
 
 // Add services to the container.
 builder.Services.AddControllers();
+
+// Добавляем SignalR
+builder.Services.AddSignalR();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -54,7 +56,7 @@ using (var scope = app.Services.CreateScope())
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
         
         // Создаем роли
-        string[] roleNames = ["Admin", "Manager", "User"];
+        string[] roleNames = ["Admin", "Manager", "User", "Guest"];
         foreach (var roleName in roleNames)
         {
             if (!await roleManager.RoleExistsAsync(roleName))
@@ -114,5 +116,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Добавляем маршрут для SignalR Hub
+app.MapHub<RegistrationHub>("/registrationHub");
 
 app.Run();
