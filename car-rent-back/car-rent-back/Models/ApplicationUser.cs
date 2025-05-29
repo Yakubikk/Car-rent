@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.JavaScript;
 using Microsoft.AspNetCore.Identity;
 
 namespace car_rent_back.Models;
@@ -11,6 +12,6 @@ public class ApplicationUser : IdentityUser
     public string DriverLicense { get; set; }
     public DateTime DriverLicenseIssueDate { get; set; }
     public DateTime BirthDate { get; set; }
-    public string PhoneNumber { get; set; }
     public string Address { get; set; }
+    public DateTime RegisterDate { get; set; } = DateTime.UtcNow;
 }

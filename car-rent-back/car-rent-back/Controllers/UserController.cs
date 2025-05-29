@@ -3,21 +3,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace car_rent_back.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UsersController : ControllerBase
+public class UsersController(UserManager<ApplicationUser> userManager) : ControllerBase
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    
-    public UsersController(UserManager<ApplicationUser> userManager)
-    {
-        _userManager = userManager;
-    }
-    
     [HttpGet("get-me")]
     [Authorize]
     public async Task<IActionResult> GetMe()
@@ -31,7 +23,7 @@ public class UsersController : ControllerBase
         }
         
         // Находим пользователя по email
-        var user = await _userManager.FindByEmailAsync(email);
+        var user = await userManager.FindByEmailAsync(email);
         
         if (user == null)
         {
@@ -39,16 +31,72 @@ public class UsersController : ControllerBase
         }
         
         // Получаем роли пользователя
-        var roles = await _userManager.GetRolesAsync(user);
+        var roles = await userManager.GetRolesAsync(user);
         
         // Возвращаем информацию о пользователе (без конфиденциальных данных)
         return Ok(new
         {
-            Email = user.Email,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            PhoneNumber = user.PhoneNumber,
+            user.Email,
+            user.FirstName,
+            user.LastName,
+            user.PhoneNumber,
             Roles = roles
         });
+    }
+    
+    [HttpGet("by-email")]
+    [Authorize(Roles = "Admin, Manager")]
+    public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
+    {
+        if (string.IsNullOrEmpty(email))
+        {
+            return BadRequest(new { Message = "Email не может быть пустым" });
+        }
+
+        var user = await userManager.FindByEmailAsync(email);
+        
+        if (user == null)
+        {
+            return NotFound(new { Message = "Пользователь не найден" });
+        }
+        
+        // Получаем роли пользователя
+        var roles = await userManager.GetRolesAsync(user);
+        
+        // Возвращаем информацию о пользователе (без конфиденциальных данных)
+        return Ok(new
+        {
+            user.Email,
+            user.FirstName,
+            user.LastName,
+            user.PhoneNumber,
+            user.PassportNumber,
+            user.DriverLicense,
+            user.DriverLicenseIssueDate,
+            user.BirthDate,
+            user.Address,
+            user.UserName,
+            Roles = roles
+        });
+    }
+    
+    [HttpGet("guest-users")]
+    [Authorize(Roles = "Admin, Manager")]
+    public async Task<IActionResult> GetGuestUsers()
+    {
+        // Получаем всех пользователей с ролью Guest
+        var users = await userManager.GetUsersInRoleAsync("Guest");
+        
+        // Возвращаем информацию о пользователях (без конфиденциальных данных)
+        var result = users.Select(user => new
+        {
+            user.Email,
+            user.FirstName,
+            user.LastName,
+            user.PhoneNumber,
+            user.RegisterDate
+        });
+        
+        return Ok(result);
     }
 }

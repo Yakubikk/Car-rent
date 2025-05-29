@@ -1,6 +1,8 @@
+using car_rent_back;
 using car_rent_back.Data;
 using car_rent_back.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +12,9 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
+
+// Регистрируем сервис IEmailSender
+builder.Services.AddTransient<IEmailSender, NoOpEmailSender>();
 
 // Настраиваем Identity с кастомной моделью пользователя и ролями
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
@@ -31,7 +36,8 @@ builder.Services.AddCors(options =>
         policy
             .WithOrigins("http://localhost:5173")
             .AllowAnyMethod()
-            .AllowAnyHeader();
+            .AllowAnyHeader()
+            .AllowCredentials();
     });
 });
 
@@ -76,7 +82,12 @@ using (var scope = app.Services.CreateScope())
                 Email = adminEmail,
                 EmailConfirmed = true,
                 FirstName = "Admin",
-                LastName = "User"
+                LastName = "User",
+                PassportNumber = "1234567890",
+                DriverLicense = "DL123456789",
+                DriverLicenseIssueDate = DateTime.UtcNow.AddYears(-5),
+                BirthDate = new DateTime(1990, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                Address = "123 Admin Street, City, Country"
             };
             
             var result = await userManager.CreateAsync(admin, "Admin@123");

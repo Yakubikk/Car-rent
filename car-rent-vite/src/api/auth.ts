@@ -1,4 +1,4 @@
-import type { AuthResponse, RegisterData } from "@/types/auth";
+import type { AuthResponse, RegisterData, User } from "@/types/auth";
 import apiClient from "./client";
 
 export const AuthApi = {
@@ -7,7 +7,7 @@ export const AuthApi = {
 
   register: async (data: RegisterData) => await apiClient.post("/auth/register", data),
 
-  getMe: () => apiClient.get("/api/users/get-me"),
+  getMe: () => apiClient.get<User>("/api/users/get-me"),
 
   refreshToken: (refreshToken: string) =>
     apiClient.post<AuthResponse>("/refresh", { refreshToken }),

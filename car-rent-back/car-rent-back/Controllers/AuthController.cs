@@ -5,18 +5,18 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
+namespace car_rent_back.Controllers;
+
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class AuthController(
-    UserManager<IdentityUser> userManager,
+    UserManager<ApplicationUser> userManager,
     ILogger<AuthController> logger,
     IEmailSender emailSender,
-    IHubContext<RegistrationHub> hubContext) : ControllerBase
+    IHubContext<RegistrationHub> hubContext)
+    : ControllerBase
 {
-    private readonly UserManager<IdentityUser> _userManager = userManager;
-    private readonly ILogger<AuthController> _logger = logger;
-    private readonly IEmailSender _emailSender = emailSender; // Если нужно отправить email
-    private readonly IHubContext<RegistrationHub> _hubContext = hubContext;
+    private readonly IEmailSender _emailSender = emailSender;
 
     // DTO для запросов с email
     public class EmailDto
@@ -43,26 +43,29 @@ public class AuthController(
                 Address = registerDto.Address
             };
 
-            var result = await _userManager.CreateAsync(user, registerDto.Password);
+            var result = await userManager.CreateAsync(user, registerDto.Password);
 
-            await _userManager.AddToRoleAsync(user, "Guest"); // Добавляем пользователя в роль "Guest" (ожидает подтверждения)
-
-            if (result.Succeeded)
+            if (!result.Succeeded) return BadRequest(result.Errors);
+            // Добавляем пользователя в роль Guest ТОЛЬКО после успешного создания
+            var roleResult = await userManager.AddToRoleAsync(user, "Guest");
+                
+            if (!roleResult.Succeeded)
             {
-                _logger.LogInformation("Новый пользователь зарегистрирован: {Email}", registerDto.Email);
-
-                // Здесь можно отправить уведомление на фронтенд через SignalR или другой механизм
-                // Или отправить email администратору
-                await SendRegistrationNotification(registerDto.Email);
-
-                return Ok(new { Message = "Регистрация успешна. Ожидайте подтверждения." });
+                logger.LogWarning("Не удалось добавить пользователя {Email} в роль Guest: {Errors}", 
+                    registerDto.Email, string.Join(", ", roleResult.Errors.Select(e => e.Description)));
             }
+                
+            logger.LogInformation("Новый пользователь зарегистрирован: {Email}", registerDto.Email);
 
-            return BadRequest(result.Errors);
+            // Здесь можно отправить уведомление на фронтенд через SignalR или другой механизм
+            await SendRegistrationNotification(registerDto.Email);
+
+            return Ok(new { Message = "Регистрация успешна. Ожидайте подтверждения." });
+
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Ошибка при регистрации пользователя");
+            logger.LogError(ex, "Ошибка при регистрации пользователя: {Message}", ex.Message);
             return StatusCode(500, "Произошла ошибка при регистрации");
         }
     }
@@ -73,7 +76,7 @@ public class AuthController(
     {
         try
         {
-            var user = await _userManager.FindByEmailAsync(emailDto.Email);
+            var user = await userManager.FindByEmailAsync(emailDto.Email);
 
             if (user == null)
             {
@@ -81,32 +84,30 @@ public class AuthController(
             }
 
             // Проверяем, что пользователь в роли Guest (ожидает подтверждения)
-            if (await _userManager.IsInRoleAsync(user, "Guest"))
-            {
-                // Удаляем роль Guest и добавляем роль User
-                await _userManager.RemoveFromRoleAsync(user, "Guest");
-                await _userManager.AddToRoleAsync(user, "User");
+            if (!await userManager.IsInRoleAsync(user, "Guest"))
+                return BadRequest(new { Message = "Пользователь уже подтвержден или находится в другой роли" });
+            // Удаляем роль Guest и добавляем роль User
+            await userManager.RemoveFromRoleAsync(user, "Guest");
+            await userManager.AddToRoleAsync(user, "User");
 
-                // Отправляем email уведомление пользователю о подтверждении регистрации
-                await _emailSender.SendEmailAsync(
-                    user.Email!,
-                    "Регистрация подтверждена",
-                    "Ваша регистрация успешно подтверждена. Вы можете войти в систему."
-                );
+            // Отправляем email уведомление пользователю о подтверждении регистрации
+            // await _emailSender.SendEmailAsync(
+            //     user.Email!,
+            //     "Регистрация подтверждена",
+            //     "Ваша регистрация успешно подтверждена. Вы можете войти в систему."
+            // );
 
-                // Уведомляем об этом через SignalR
-                await _hubContext.Clients.All.SendAsync("RegistrationApproved", new { email = user.Email, date = DateTime.Now });
+            // Уведомляем об этом через SignalR
+            await hubContext.Clients.All.SendAsync("RegistrationApproved", new { email = user.Email, date = DateTime.Now });
 
-                _logger.LogInformation("Регистрация пользователя одобрена: {Email}", user.Email);
+            logger.LogInformation("Регистрация пользователя одобрена: {Email}", user.Email);
 
-                return Ok(new { Message = "Регистрация пользователя подтверждена" });
-            }
+            return Ok(new { Message = "Регистрация пользователя подтверждена" });
 
-            return BadRequest(new { Message = "Пользователь уже подтвержден или находится в другой роли" });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Ошибка при подтверждении регистрации пользователя");
+            logger.LogError(ex, "Ошибка при подтверждении регистрации пользователя");
             return StatusCode(500, new { Message = "Произошла ошибка при подтверждении регистрации" });
         }
     }
@@ -117,7 +118,7 @@ public class AuthController(
     {
         try
         {
-            var user = await _userManager.FindByEmailAsync(emailDto.Email);
+            var user = await userManager.FindByEmailAsync(emailDto.Email);
 
             if (user == null)
             {
@@ -125,23 +126,20 @@ public class AuthController(
             }
 
             // Удаляем пользователя
-            var result = await _userManager.DeleteAsync(user);
+            var result = await userManager.DeleteAsync(user);
 
-            if (result.Succeeded)
-            {
-                // Уведомляем об этом через SignalR
-                await _hubContext.Clients.All.SendAsync("RegistrationRejected", new { email = emailDto.Email, date = DateTime.Now });
+            if (!result.Succeeded) return BadRequest(result.Errors);
+            // Уведомляем об этом через SignalR
+            await hubContext.Clients.All.SendAsync("RegistrationRejected", new { email = emailDto.Email, date = DateTime.Now });
 
-                _logger.LogInformation("Регистрация пользователя отклонена: {Email}", emailDto.Email);
+            logger.LogInformation("Регистрация пользователя отклонена: {Email}", emailDto.Email);
 
-                return Ok(new { Message = "Регистрация пользователя отклонена" });
-            }
+            return Ok(new { Message = "Регистрация пользователя отклонена" });
 
-            return BadRequest(result.Errors);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Ошибка при отклонении регистрации пользователя");
+            logger.LogError(ex, "Ошибка при отклонении регистрации пользователя");
             return StatusCode(500, new { Message = "Произошла ошибка при отклонении регистрации" });
         }
     }
@@ -157,13 +155,13 @@ public class AuthController(
             //     $"Новый пользователь хочет зарегистрироваться: {email}");
 
             // Отправка уведомления на фронтенд через SignalR для подтверждения менеджером
-            await _hubContext.Clients.All.SendAsync("NewRegistration", new { email, date = DateTime.Now });
+            await hubContext.Clients.All.SendAsync("NewRegistration", new { email, date = DateTime.Now });
 
-            _logger.LogInformation("Отправлено уведомление о регистрации через SignalR: {Email}", email);
+            logger.LogInformation("Отправлено уведомление о регистрации через SignalR: {Email}", email);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Ошибка при отправке уведомления о регистрации");
+            logger.LogError(ex, "Ошибка при отправке уведомления о регистрации");
         }
     }
 }

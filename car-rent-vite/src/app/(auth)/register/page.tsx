@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/stores/auth";
 import type { RegisterData } from "@/types/auth";
 
-export const Register = () => {
+export default function RegisterPage() {
   const [formData, setFormData] = useState<RegisterData>({
     email: "",
     password: "",

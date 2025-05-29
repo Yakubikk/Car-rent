@@ -10,6 +10,12 @@ export interface User {
   email: string;
   firstName: string;
   lastName: string;
+  passportNumber: string;
+  driverLicense: string;
+  driverLicenseIssueDate: string;
+  birthDate: string;
+  phoneNumber: string;
+  address: string;
   roles: string[];
 }
 

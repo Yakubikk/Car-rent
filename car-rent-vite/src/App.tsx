@@ -1,53 +1,42 @@
-import { Routes, Route } from "react-router-dom";
-import { ProtectedRoute } from "./components/ProtectedRoute";
-import { useEffect } from "react";
-import { useAuthStore } from "./stores/auth";
-import { Login } from "./pages/auth/Login";
-import { Register } from "./pages/auth/Register";
-import { Toaster } from "react-hot-toast";
-import {
-  setupSignalRConnection,
-  disconnectSignalR,
-} from "@/services/signalR.tsx";
-
-const NotFound = () => <div>Page Not Found</div>;
-const Dashboard = () => <div>Dashboard</div>;
+import { RouterProvider } from "react-router-dom";
+import { router } from "./router/Router";
+import * as signalR from "@microsoft/signalr";
+import { useRef, useEffect } from "react";
+import { connection, setupSignalRHandlers } from "./services/signalR";
 
 function App() {
-  const { fetchUser, user } = useAuthStore();
+  const connectionStarted = useRef(false); // Флаг для отслеживания состояния подключения
 
   useEffect(() => {
-    // При загрузке приложения пытаемся получить пользователя
-    fetchUser().catch(() => {});
-  }, [fetchUser]);
+    // Проверяем, не было ли уже начато подключение
+    if (!connectionStarted.current) {
+      connectionStarted.current = true;
 
-  // Connect to SignalR if user is authenticated and has appropriate role
-  useEffect(() => {
-    if (
-      user &&
-      user.roles &&
-      (user.roles.includes("Manager") || user.roles.includes("Admin"))
-    ) {
-      setupSignalRConnection();
-
-      // Disconnect when component unmounts
-      return () => {
-        disconnectSignalR();
+      const startConnection = async () => {
+        try {
+          // Проверяем текущее состояние соединения
+          if (connection.state === signalR.HubConnectionState.Disconnected) {
+            await connection.start();
+            console.log("SignalR Connected");
+            setupSignalRHandlers();
+          }
+        } catch (err) {
+          console.error("SignalR Connection Error: ", err);
+        }
       };
-    }
-  }, [user]);
 
-  return (
-    <>
-      <Toaster />
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/" element={<Dashboard />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </>
-  );
+      startConnection();
+    }
+
+    // Очистка при размонтировании компонента
+    return () => {
+      if (connection.state === signalR.HubConnectionState.Connected) {
+        connection.stop();
+      }
+    };
+  }, []);
+  
+  return <RouterProvider router={router} />;
 }
 
 export default App;

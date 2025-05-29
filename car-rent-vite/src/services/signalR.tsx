@@ -1,105 +1,49 @@
 import * as signalR from "@microsoft/signalr";
 import toast from "react-hot-toast";
-import { approveRegistration, rejectRegistration } from "@/api/auth";
+const baseUrl = import.meta.env.VITE_API_URL || "";
+import { RegistrationToast } from "@/components/RegistrationToast";
+import { useAuthStore } from "@/stores/auth";
 
-// Custom toast component for registration notifications
-export const RegistrationToast = ({ data, t }: { data: any; t: any }) => {
-  const date = new Date(data.date);
-  const formattedDate = date.toLocaleString();
+// Создаем соединение
+export const connection = new signalR.HubConnectionBuilder()
+  .withUrl(`${baseUrl}/registrationHub`, {
+    skipNegotiation: true,
+    transport: signalR.HttpTransportType.WebSockets,
+  })
+  .withAutomaticReconnect()
+  .configureLogging(signalR.LogLevel.Information)
+  .build();
 
-  const handleApprove = async () => {
-    try {
-      await approveRegistration(data.email);
-      toast.success(`Регистрация пользователя ${data.email} подтверждена`);
-    } catch (error) {
-      toast.error("Ошибка подтверждения регистрации");
-      console.error("Ошибка при подтверждении регистрации:", error);
-    } finally {
-      toast.dismiss(t.id);
-    }
-  };
+// Хранилище для обработчиков, чтобы избежать дублирования
+const handlersSetup = new Set<string>();
 
-  const handleReject = async () => {
-    try {
-      await rejectRegistration(data.email);
-      toast.success(`Регистрация пользователя ${data.email} отклонена`);
-    } catch (error) {
-      toast.error("Ошибка отклонения регистрации");
-      console.error("Ошибка при отклонении регистрации:", error);
-    } finally {
-      toast.dismiss(t.id);
-    }
-  };
+// Создаем функцию для настройки обработчиков событий
+export const setupSignalRHandlers = () => {
+  // Проверяем, не был ли уже добавлен обработчик
+  if (!handlersSetup.has("NewRegistration")) {
+    handlersSetup.add("NewRegistration");
 
-  return (
-    <div className="registration-notification">
-      <h3 className="font-bold">Новый запрос на регистрацию</h3>
-      <p>Пользователь: {data.email}</p>
-      <p>Дата: {formattedDate}</p>
-      <div className="flex gap-2 mt-2">
-        <button
-          className="bg-green-500 text-white px-3 py-1 rounded"
-          onClick={handleApprove}
-        >
-          Подтвердить
-        </button>
-        <button
-          className="bg-red-500 text-white px-3 py-1 rounded"
-          onClick={handleReject}
-        >
-          Отклонить
-        </button>
-      </div>
-    </div>
-  );
-};
+    connection.on("NewRegistration", (data: { email: string; date: string }) => {
+      const authStore = useAuthStore.getState();
+      const user = authStore.user;
 
-// Singleton connection instance
-let connection: signalR.HubConnection | null = null;
-
-// Function to setup SignalR connection
-export function setupSignalRConnection(baseUrl: string = import.meta.env.VITE_API_URL || "") {
-  if (connection) return connection;
-
-  // Create a new connection
-  connection = new signalR.HubConnectionBuilder()
-    .withUrl(`${baseUrl}/registrationHub`)
-    .withAutomaticReconnect()
-    .build();
-
-  // Handle new registration event
-  connection.on("NewRegistration", (data) => {
-    console.log("Получено уведомление о новой регистрации:", data);
-    
-    // Show toast notification with approval buttons
-    toast.custom(
-      (t) => <RegistrationToast data={data} t={t} />,
-      {
-        duration: 15000, // 15 seconds
-        position: "top-right",
+      // Проверяем, что пользователь не является гостем и имеет права просматривать регистрации
+      if (user && user.roles.includes("Guest")) {
+        toast.success(`Регистрация успешна. Ждите ответа на Ваш email: ${data.email}`);
+        return;
       }
-    );
-  });
 
-  // Start the connection
-  connection
-    .start()
-    .then(() => {
-      console.log("Подключение к SignalR успешно установлено");
-    })
-    .catch((err) => {
-      console.error("Ошибка подключения к SignalR:", err);
-      connection = null; // Reset connection on error
+      // Проверяем права пользователя для просмотра уведомлений о регистрации
+      const hasViewRegistrationPermission = user?.roles.some((role) => role === "Admin" || role === "Manager");
+
+      if (!hasViewRegistrationPermission) {
+        return; // Не показываем уведомление пользователям без прав
+      }
+
+      console.log("New registration received:", data);
+
+      // Если пользователь имеет права, используем кастомный компонент
+      toast.custom((t) => <RegistrationToast data={data} t={t} />, { position: "top-right", duration: 10000 });
     });
-
-  return connection;
-}
-
-// Function to disconnect
-export function disconnectSignalR() {
-  if (connection) {
-    connection.stop();
-    connection = null;
-    console.log("SignalR соединение закрыто");
   }
-}
+};

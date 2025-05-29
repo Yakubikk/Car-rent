@@ -1,3 +1,4 @@
+import { AuthApi } from "@/api/auth";
 import apiClient from "@/api/client";
 import type { AuthResponse, RegisterData, User } from "@/types/auth";
 import { create } from "zustand";
@@ -5,8 +6,6 @@ import { persist } from "zustand/middleware";
 
 interface AuthState {
   user: User | null;
-  accessToken: string | null;
-  refreshToken: string | null;
   isLoading: boolean;
   error: string | null;
   login: (credentials: { email: string; password: string }) => Promise<void>;
@@ -19,27 +18,19 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
       user: null,
-      accessToken: null,
-      refreshToken: null,
       isLoading: false,
       error: null,
 
       login: async (credentials) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await apiClient.post<AuthResponse>(
-            "/login",
-            credentials
-          );
+          const response = await apiClient.post<AuthResponse>("/login", credentials);
 
-          // Сохраняем токены в хранилище Zustand
           set({
-            accessToken: response.data.accessToken,
-            refreshToken: response.data.refreshToken,
             isLoading: false,
           });
 
-          // Дополнительно сохраняем в localStorage для interceptor'а
+          // Сохраняем токены в localStorage для interceptor'а
           sessionStorage.setItem("accessToken", response.data.accessToken);
           localStorage.setItem("refreshToken", response.data.refreshToken);
 
@@ -47,6 +38,9 @@ export const useAuthStore = create<AuthState>()(
           await get().fetchUser();
         } catch (error) {
           set({
+            user: null,
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             error: error.response?.data?.message || "Login failed",
             isLoading: false,
           });
@@ -61,6 +55,9 @@ export const useAuthStore = create<AuthState>()(
           set({ isLoading: false });
         } catch (error) {
           set({
+            user: null,
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             error: error.response?.data?.message || "Registration failed",
             isLoading: false,
           });
@@ -69,18 +66,20 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
-        // Очищаем все хранилища
-        localStorage.removeItem("accessToken");
+        sessionStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
-        set({ user: null, accessToken: null, refreshToken: null });
+        set({ user: null });
       },
 
       fetchUser: async () => {
+        set({ isLoading: true, error: null });
         try {
-          const response = await apiClient.get<User>("/api/users/get-me");
-          set({ user: response.data });
+          const response = await AuthApi.getMe();
+          set({ user: response.data, isLoading: false, error: null });
         } catch (error) {
-          set({ user: null });
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
+          set({ user: null, isLoading: false, error: error.response?.data?.message || "Failed to fetch user" });
           throw error;
         }
       },
@@ -89,8 +88,6 @@ export const useAuthStore = create<AuthState>()(
       name: "auth-storage",
       partialize: (state) => ({
         user: state.user,
-        accessToken: state.accessToken,
-        refreshToken: state.refreshToken,
       }),
     }
   )
