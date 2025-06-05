@@ -87,6 +87,8 @@ using (var scope = app.Services.CreateScope())
                 DriverLicense = "DL123456789",
                 DriverLicenseIssueDate = DateTime.UtcNow.AddYears(-5),
                 BirthDate = new DateTime(1990, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                PhoneNumber = "1234567890",
+                RegisterDate = DateTime.UtcNow,
                 Address = "123 Admin Street, City, Country"
             };
             

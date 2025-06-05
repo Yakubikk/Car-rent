@@ -44,7 +44,7 @@ public class RentalsController(ApplicationDbContext context, UserManager<Applica
     }
 
     // GET: api/Rentals/5
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     public async Task<ActionResult<Rental>> GetRental(Guid id)
     {
         var rental = await context.Rentals
@@ -116,7 +116,7 @@ public class RentalsController(ApplicationDbContext context, UserManager<Applica
     }
 
     // PUT: api/Rentals/5/Status
-    [HttpPut("{id}/Status")]
+    [HttpPut("{id:guid}/Status")]
     [Authorize(Policy = "RequireManagerRole")]
     public async Task<IActionResult> UpdateRentalStatus(Guid id, [FromBody] RentalStatusUpdateDto statusDto)
     {
@@ -132,7 +132,7 @@ public class RentalsController(ApplicationDbContext context, UserManager<Applica
         rental.Status = statusDto.Status;
 
         // Если аренда завершается, делаем автомобиль доступным снова
-        if (statusDto.Status == RentalStatus.Completed || statusDto.Status == RentalStatus.Cancelled)
+        if (statusDto.Status is RentalStatus.Completed or RentalStatus.Cancelled)
         {
             rental.Car.IsAvailable = true;
             
@@ -148,7 +148,7 @@ public class RentalsController(ApplicationDbContext context, UserManager<Applica
     }
 
     // DELETE: api/Rentals/5
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     [Authorize(Policy = "RequireAdminRole")]
     public async Task<IActionResult> DeleteRental(Guid id)
     {

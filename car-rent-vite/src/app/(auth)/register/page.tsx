@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/stores/auth";
 import type { RegisterData } from "@/types/auth";
@@ -23,7 +23,7 @@ export default function RegisterPage() {
     e.preventDefault();
     try {
       await register(formData);
-      navigate("/dashboard");
+      navigate("/catalog");
     } catch (err) {
       console.error(err);
     }
@@ -32,7 +32,7 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">Регистрация</h1>
 
         {error && <div className="mb-4 text-red-500">{error}</div>}
 

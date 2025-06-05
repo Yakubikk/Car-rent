@@ -47,6 +47,11 @@ export const usePermissions = () => {
     return roles.some(role => user.roles.includes(role));
   };
 
+  const hasAllRoles = (roles: Role[]): boolean => {
+    if (!user?.roles) return false;
+    return roles.every(role => user.roles.includes(role));
+  }
+
   const getUserRoles = (): Role[] => {
     if (!user?.roles) return [];
     return user.roles.filter(role => Object.values(Role).includes(role as Role)) as Role[];
@@ -68,6 +73,10 @@ export const usePermissions = () => {
     return hasRole(Role.GUEST);
   };
 
+  const isActive = (): boolean => {
+    return user?.isActive ?? false;
+  }
+
   return {
     userPermissions,
     hasPermission,
@@ -75,11 +84,13 @@ export const usePermissions = () => {
     hasAllPermissions,
     hasRole,
     hasAnyRole,
+    hasAllRoles,
     getUserRoles,
     isAdmin,
     isManager,
     isUser,
     isGuest,
+    isActive,
     user
   };
 };

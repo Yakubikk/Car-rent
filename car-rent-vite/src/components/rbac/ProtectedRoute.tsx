@@ -2,6 +2,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { usePermissions } from "@/hooks/usePermissions";
 import { Permission, Role } from "@/types/rbac";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
+import React from "react";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -9,6 +10,7 @@ interface ProtectedRouteProps {
   requiredRoles?: Role[];
   fallbackPath?: string;
   requireAuth?: boolean;
+  requireActive?: boolean;
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
@@ -16,9 +18,10 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   requiredPermissions = [],
   requiredRoles = [],
   fallbackPath = "/login",
-  requireAuth = true
+  requireAuth = true,
+  requireActive = false,
 }) => {
-  const { user, hasAnyPermission, hasAnyRole } = usePermissions();
+  const { user, hasAnyPermission, hasAnyRole, isActive } = usePermissions();
   const location = useLocation();
 
   // Если требуется аутентификация, но пользователь не залогинен
@@ -29,6 +32,11 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   // Если пользователь есть, но загружается
   if (requireAuth && !user) {
     return <LoadingSpinner fullScreen />;
+  }
+
+  // Если пользователь неактивен, перенаправляем на страницу неактивного аккаунта
+  if (requireActive && !isActive) {
+    return <Navigate to="/account-inactive" replace />;
   }
 
   // Проверяем разрешения

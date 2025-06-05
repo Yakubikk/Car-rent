@@ -14,4 +14,6 @@ public class ApplicationUser : IdentityUser
     public DateTime BirthDate { get; set; }
     public string Address { get; set; }
     public DateTime RegisterDate { get; set; } = DateTime.UtcNow;
+    public string? AvatarUrl { get; set; }
+    public bool IsActive { get; set; } = true;
 }

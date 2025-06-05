@@ -55,7 +55,7 @@ export default function NewRegistrationPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-full">
         <div className="bg-white p-6 rounded shadow-md w-full max-w-md">
           <h2 className="text-2xl font-bold mb-4">Загрузка...</h2>
         </div>
@@ -65,7 +65,7 @@ export default function NewRegistrationPage() {
 
   if (!user) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-full">
         <div className="bg-white p-6 rounded shadow-md w-full max-w-md">
           <h2 className="text-2xl font-bold mb-4">Пользователь не найден</h2>
           <p className="mb-4 text-red-500">{errorMessage || "Возможно проблема с передачей email или API-запросом."}</p>
@@ -109,7 +109,7 @@ export default function NewRegistrationPage() {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex items-center justify-center h-full">
       <div className="bg-white p-6 rounded shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold mb-4">Регистрация пользователя</h2>
         <p className="mb-2">Email: {user.email}</p>

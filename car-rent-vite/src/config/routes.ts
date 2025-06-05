@@ -5,6 +5,7 @@ export interface RouteConfig {
   requiredPermissions?: Permission[];
   requiredRoles?: Role[];
   isPublic?: boolean;
+  requireActive?: boolean;
 }
 
 export const ROUTE_CONFIGS: RouteConfig[] = [
@@ -20,8 +21,8 @@ export const ROUTE_CONFIGS: RouteConfig[] = [
     requiredPermissions: [Permission.VIEW_DASHBOARD] 
   },
   { 
-    path: "/users", 
-    requiredPermissions: [Permission.VIEW_USERS] 
+    path: "/users",
+    requiredPermissions: [Permission.VIEW_USERS]
   },
   { 
     path: "/users/guests", 

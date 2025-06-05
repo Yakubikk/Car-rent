@@ -16,6 +16,9 @@ export interface User {
   birthDate: string;
   phoneNumber: string;
   address: string;
+  registerDate: string;
+  isActive: boolean;
+  avatarUrl?: string;
   roles: string[];
 }
 

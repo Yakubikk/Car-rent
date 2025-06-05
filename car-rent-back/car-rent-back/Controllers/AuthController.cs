@@ -13,11 +13,8 @@ public class AuthController(
     UserManager<ApplicationUser> userManager,
     ILogger<AuthController> logger,
     IEmailSender emailSender,
-    IHubContext<RegistrationHub> hubContext)
-    : ControllerBase
+    IHubContext<RegistrationHub> hubContext) : ControllerBase
 {
-    private readonly IEmailSender _emailSender = emailSender;
-
     // DTO для запросов с email
     public class EmailDto
     {
@@ -40,7 +37,8 @@ public class AuthController(
                 DriverLicenseIssueDate = registerDto.DriverLicenseIssueDate,
                 BirthDate = registerDto.BirthDate,
                 PhoneNumber = registerDto.PhoneNumber,
-                Address = registerDto.Address
+                Address = registerDto.Address,
+                IsActive = false
             };
 
             var result = await userManager.CreateAsync(user, registerDto.Password);
@@ -89,6 +87,11 @@ public class AuthController(
             // Удаляем роль Guest и добавляем роль User
             await userManager.RemoveFromRoleAsync(user, "Guest");
             await userManager.AddToRoleAsync(user, "User");
+            
+            // Активируем пользователя
+            user.IsActive = true;
+            var result = await userManager.UpdateAsync(user);
+            if (!result.Succeeded) return BadRequest(result.Errors);
 
             // Отправляем email уведомление пользователю о подтверждении регистрации
             // await _emailSender.SendEmailAsync(

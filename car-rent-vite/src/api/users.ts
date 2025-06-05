@@ -2,6 +2,16 @@ import type { User } from "@/types/auth";
 import apiClient from "./client";
 
 export const UsersApi = {
+  getAll: async () => {
+    try {
+      const response = await apiClient.get<User[]>("/api/users");
+      return response.data;
+    } catch (error) {
+      console.error("API error in getAll:", error);
+      throw error;
+    }
+  },
+
   // Try multiple methods to get a user by email
   getUserByEmail: async (email: string) => {
     try {

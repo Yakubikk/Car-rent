@@ -3,15 +3,14 @@
     background-color: white;
   }
   to {
-    background-color: #111; /* или любой другой тёмный цвет */
+    background-color: #111;
   }
 }
 
 .animate-darken-bg {
-  animation: darken-bg 1s ease-out forwards;
+  animation: darken-bg 0.8s ease-out forwards;
 }
 
-/* Остальные анимации остаются как есть */
 @keyframes slideInLeft {
   from {
     opacity: 0;

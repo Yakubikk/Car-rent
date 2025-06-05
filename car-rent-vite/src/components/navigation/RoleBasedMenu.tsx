@@ -41,7 +41,7 @@ const menuItems: MenuItem[] = [
 
 export const RoleBasedMenu: React.FC = () => {
   const location = useLocation();
-  const { user, isAdmin, isManager, isUser } = usePermissions();
+  const { user } = usePermissions();
   const { logout } = useAuthStore();
 
   if (!user) {
@@ -98,23 +98,12 @@ export const RoleBasedMenu: React.FC = () => {
             ))}
 
             <div className="flex items-center space-x-3 ml-6 pl-6 border-l border-gray-200">
-              <span className="text-sm text-gray-600">Привет, {user.firstName}</span>
-              <div className="flex items-center space-x-1">
-                {isAdmin() && (
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                    Админ
+              <div className="flex-shrink-0 h-10 w-10">
+                <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center cursor-pointer">
+                  <span className="text-sm font-medium text-gray-700">
+                    {user.firstName[0].toUpperCase()}{user.lastName[0].toUpperCase()}
                   </span>
-                )}
-                {isManager() && (
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    Менеджер
-                  </span>
-                )}
-                {isUser() && (
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                    Пользователь
-                  </span>
-                )}
+                </div>
               </div>
               <button
                 onClick={() => logout()}

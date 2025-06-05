@@ -1,63 +1,37 @@
 import { usePermissions } from "@/hooks/usePermissions";
 import { Permission } from "@/types/rbac";
 import { PermissionGate } from "@/components/rbac/PermissionGate";
-import { useState } from "react";
-
-interface User {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  roles: string[];
-  isActive: boolean;
-  registrationDate: string;
-}
-
-// Моковые данные пользователей
-const mockUsers: User[] = [
-  {
-    id: "1",
-    email: "admin@example.com",
-    firstName: "Иван",
-    lastName: "Администратор",
-    roles: ["Admin"],
-    isActive: true,
-    registrationDate: "2024-01-15",
-  },
-  {
-    id: "2",
-    email: "manager@example.com",
-    firstName: "Анна",
-    lastName: "Менеджер",
-    roles: ["Manager"],
-    isActive: true,
-    registrationDate: "2024-02-20",
-  },
-  {
-    id: "3",
-    email: "user@example.com",
-    firstName: "Петр",
-    lastName: "Пользователь",
-    roles: ["User"],
-    isActive: true,
-    registrationDate: "2024-03-10",
-  },
-  {
-    id: "4",
-    email: "guest@example.com",
-    firstName: "Мария",
-    lastName: "Гость",
-    roles: ["Guest"],
-    isActive: false,
-    registrationDate: "2024-05-01",
-  },
-];
+import {useEffect, useState} from "react";
+import {UsersApi} from "@/api/users.ts";
+import toast from "react-hot-toast";
+import type {User} from "@/types/auth.ts";
 
 export default function UsersPage() {
   const { isAdmin } = usePermissions();
-  const [users] = useState<User[]>(mockUsers);
+  const [users, setUsers] = useState<User[]>([]);
   const [filter, setFilter] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchGuestUsers = async () => {
+      try {
+        setLoading(true);
+        const users = await UsersApi.getAll();
+        setUsers(users);
+        setError(null);
+      } catch (err) {
+        setError("Не удалось загрузить список пользователей");
+        toast.error("Ошибка при загрузке пользователей");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGuestUsers();
+  }, []);
 
   const filteredUsers = users.filter((user) => {
     const matchesName = user.firstName.toLowerCase().includes(filter.toLowerCase()) ||
@@ -77,6 +51,28 @@ export default function UsersPage() {
     };
     return colors[role as keyof typeof colors] || "bg-gray-100 text-gray-800";
   };
+
+  const translateRole = (role: string) => {
+    const translations: Record<string, string> = {
+      Admin: "Администратор",
+      Manager: "Менеджер",
+      User: "Пользователь",
+      Guest: "Гость",
+    };
+    return translations[role] || role;
+  }
+
+  if (loading) {
+    return <div className="text-center py-8">Загрузка...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-8 text-red-500">
+        {error}
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -140,15 +136,22 @@ export default function UsersPage() {
       <div className="bg-white shadow overflow-hidden sm:rounded-md">
         <ul className="divide-y divide-gray-200">
           {filteredUsers.map((user) => (
-            <li key={user.id}>
+            <li key={user.email}>
               <div className="px-4 py-4 sm:px-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 h-10 w-10">
                       <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
-                        <span className="text-sm font-medium text-gray-700">
-                          {user.firstName[0]}{user.lastName[0]}
-                        </span>
+                        {user.avatarUrl ? (
+                          <img
+                            src={user.avatarUrl} alt={`${user.firstName[0].toUpperCase()}${user.lastName[0].toUpperCase()}`}
+                            className="h-10 w-10 rounded-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-gray-500 text-lg font-bold">
+                            {user.firstName[0].toUpperCase()}{user.lastName[0].toUpperCase()}
+                          </span>
+                        )}
                       </div>
                     </div>
                     <div className="ml-4">
@@ -159,7 +162,7 @@ export default function UsersPage() {
                         {user.roles.length > 0 && (
                           user.roles.map((role) => (
                             <span key={role} className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getRoleBadge([role])}`}>
-                              {role}
+                              {translateRole(role)}
                             </span>
                           ))
                         )}
@@ -173,7 +176,7 @@ export default function UsersPage() {
                         {user.email}
                       </div>
                       <div className="text-sm text-gray-500">
-                        Регистрация: {new Date(user.registrationDate).toLocaleDateString()}
+                        Регистрация: {new Date(user.registerDate).toLocaleDateString()}
                       </div>
                     </div>
                   </div>

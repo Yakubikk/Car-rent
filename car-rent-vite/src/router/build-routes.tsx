@@ -1,5 +1,5 @@
 import type { RouteObject } from "react-router-dom";
-import { lazy, Suspense } from "react";
+import React, { lazy, Suspense } from "react";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { ProtectedRoute } from "../components/rbac/ProtectedRoute";
 import { getRouteConfig } from "../config/routes";
@@ -55,32 +55,30 @@ export function buildRoutes(): RouteObject[] {
     // Получаем конфигурацию маршрута для проверки разрешений
     const routeConfig = getRouteConfig(finalPath);
 
+    // Создаем элемент страницы с Suspense внутри Layout
+    const pageElement = LayoutComponent ? (
+      <LayoutComponent>
+        <Suspense fallback={<LoadingSpinner />}>
+          <PageComponent />
+        </Suspense>
+      </LayoutComponent>
+    ) : (
+      <Suspense fallback={<LoadingSpinner />}>
+        <PageComponent />
+      </Suspense>
+    );
+
     // Создаем элемент с защитой маршрута
     const elementWithProtection = routeConfig?.isPublic ? (
-      <Suspense fallback={<LoadingSpinner />}>
-        {LayoutComponent ? (
-          <LayoutComponent>
-            <PageComponent />
-          </LayoutComponent>
-        ) : (
-          <PageComponent />
-        )}
-      </Suspense>
+      pageElement
     ) : (
       <ProtectedRoute
         requiredPermissions={routeConfig?.requiredPermissions}
         requiredRoles={routeConfig?.requiredRoles}
         requireAuth={!routeConfig?.isPublic}
+        requireActive={routeConfig?.requireActive}
       >
-        <Suspense fallback={<LoadingSpinner />}>
-          {LayoutComponent ? (
-            <LayoutComponent>
-              <PageComponent />
-            </LayoutComponent>
-          ) : (
-            <PageComponent />
-          )}
-        </Suspense>
+        {pageElement}
       </ProtectedRoute>
     );
 
