@@ -18,7 +18,7 @@ public class CarsController(ApplicationDbContext context) : ControllerBase
     }
 
     // GET: api/Cars/5
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     public async Task<ActionResult<Car>> GetCar(Guid id)
     {
         var car = await context.Cars.FindAsync(id);
@@ -72,10 +72,8 @@ public class CarsController(ApplicationDbContext context) : ControllerBase
             {
                 return NotFound();
             }
-            else
-            {
-                throw;
-            }
+
+            throw;
         }
 
         return NoContent();

@@ -114,7 +114,7 @@ public class RolesController(UserManager<ApplicationUser> userManager, RoleManag
         }
 
         var role = await roleManager.FindByNameAsync(roleName);
-        if (role.Name == "Admin" || role.Name == "User" || role.Name == "Manager")
+        if (role!.Name is "Admin" or "User" or "Manager")
         {
             return BadRequest("Нельзя удалить системную роль");
         }

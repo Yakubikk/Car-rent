@@ -14,8 +14,6 @@ namespace car_rent_back.Controllers;
 public class RentalsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
     : ControllerBase
 {
-    private readonly UserManager<ApplicationUser> _userManager = userManager;
-
     // GET: api/Rentals
     [HttpGet]
     [Authorize(Policy = "RequireManagerOrAdminRole")]
