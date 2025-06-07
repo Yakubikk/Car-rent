@@ -51,9 +51,9 @@ public class CarsController(ApplicationDbContext context) : ControllerBase
     }
 
     // PUT: api/Cars/5
-    [HttpPut("{id}")]
+    [HttpPut("{id:guid}")]
     [Authorize(Policy = "RequireAdminRole")]
-    public async Task<IActionResult> PutCar(Guid id, Car car)
+    public async Task<ActionResult<Car>> PutCar(Guid id, Car car)
     {
         if (id != car.Id)
         {
@@ -76,18 +76,27 @@ public class CarsController(ApplicationDbContext context) : ControllerBase
             throw;
         }
 
-        return NoContent();
+        return car;
     }
 
     // DELETE: api/Cars/5
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     [Authorize(Policy = "RequireAdminRole")]
     public async Task<IActionResult> DeleteCar(Guid id)
     {
-        var car = await context.Cars.FindAsync(id);
+        var car = await context.Cars
+            .Include(c => c.Rentals)
+            .FirstOrDefaultAsync(c => c.Id == id);
+            
         if (car == null)
         {
             return NotFound();
+        }
+        
+        // Проверяем, есть ли активные или забронированные аренды для этой машины
+        if (car.Rentals.Any(r => r.Status is RentalStatus.Active or RentalStatus.Booked))
+        {
+            return BadRequest("Невозможно удалить машину, которая в данный момент используется или забронирована.");
         }
 
         context.Cars.Remove(car);
@@ -97,7 +106,7 @@ public class CarsController(ApplicationDbContext context) : ControllerBase
     }
 
     // PUT: api/Cars/5/Availability
-    [HttpPut("{id}/Availability")]
+    [HttpPatch("{id:guid}/Availability")]
     [Authorize(Policy = "RequireManagerRole")]
     public async Task<IActionResult> ToggleCarAvailability(Guid id, [FromBody] bool isAvailable)
     {

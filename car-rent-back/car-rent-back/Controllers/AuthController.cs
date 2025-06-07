@@ -34,11 +34,13 @@ public class AuthController(
                 LastName = registerDto.LastName,
                 PassportNumber = registerDto.PassportNumber,
                 DriverLicense = registerDto.DriverLicense,
-                DriverLicenseIssueDate = registerDto.DriverLicenseIssueDate,
-                BirthDate = registerDto.BirthDate,
+                // Конвертируем даты в UTC формат
+                DriverLicenseIssueDate = DateTime.SpecifyKind(registerDto.DriverLicenseIssueDate, DateTimeKind.Utc),
+                BirthDate = DateTime.SpecifyKind(registerDto.BirthDate, DateTimeKind.Utc),
                 PhoneNumber = registerDto.PhoneNumber,
                 Address = registerDto.Address,
-                IsActive = false
+                IsActive = false,
+                RegisterDate = DateTime.UtcNow
             };
 
             var result = await userManager.CreateAsync(user, registerDto.Password);

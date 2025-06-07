@@ -5,6 +5,7 @@ export interface RouteConfig {
   requiredPermissions?: Permission[];
   requiredRoles?: Role[];
   isPublic?: boolean;
+  requireAuth?: boolean;
   requireActive?: boolean;
 }
 
@@ -15,23 +16,24 @@ export const ROUTE_CONFIGS: RouteConfig[] = [
   { path: "/register", isPublic: true },
   { path: "/catalog", requiredPermissions: [Permission.VIEW_CARS] },
   
+  // Маршруты бронирования
+  { path: "/booking/new", requiredPermissions: [Permission.CREATE_BOOKING] },
+  { path: "/booking/confirmation", requiredPermissions: [Permission.CREATE_BOOKING] },
+  { path: "/my-rentals", requiredPermissions: [Permission.VIEW_OWN_BOOKINGS] },
+  { path: "/rentals", requiredPermissions: [Permission.VIEW_BOOKINGS] },
+  
+  // Маршруты для автомобилей
+  { path: "/cars/add", requiredPermissions: [Permission.CREATE_CAR] },
+  { path: "/cars/edit/*", requiredPermissions: [Permission.EDIT_CAR] },
+  
   // Административные маршруты
-  { 
-    path: "/dashboard", 
-    requiredPermissions: [Permission.VIEW_DASHBOARD] 
-  },
-  { 
-    path: "/users",
-    requiredPermissions: [Permission.VIEW_USERS]
-  },
-  { 
-    path: "/users/guests", 
-    requiredPermissions: [Permission.VIEW_REGISTRATIONS] 
-  },
-  { 
-    path: "/new-registration/*", 
-    requiredPermissions: [Permission.APPROVE_REGISTRATION, Permission.REJECT_REGISTRATION] 
-  },
+  { path: "/dashboard", requiredPermissions: [Permission.VIEW_DASHBOARD] },
+  { path: "/profile", isPublic: false, requireAuth: true, requireActive: true },
+  { path: "/users", requiredPermissions: [Permission.VIEW_USERS] },
+  { path: "/users/add", requiredPermissions: [Permission.CREATE_USER] },
+  { path: "/users/edit/*", requiredPermissions: [Permission.EDIT_USER] },
+  { path: "/users/guests", requiredPermissions: [Permission.VIEW_REGISTRATIONS] },
+  { path: "/new-registration/*", requiredPermissions: [Permission.APPROVE_REGISTRATION, Permission.REJECT_REGISTRATION] },
 ];
 
 export const getRouteConfig = (path: string): RouteConfig | undefined => {

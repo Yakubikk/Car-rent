@@ -15,22 +15,22 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       await login(formData);
-      navigate("/dashboard");
+      navigate("/catalog", { replace: true });
     } catch (err) {
       console.error(err);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
+    <div className="min-h-screen flex items-center justify-center bg-pink-bg">
+      <div className="bg-white p-8 rounded-lg shadow-pink w-full max-w-md border border-pink-border">
+        <h1 className="text-2xl font-bold mb-6 text-center text-pink-text">Вход</h1>
 
         {error && <div className="mb-4 text-red-500">{error}</div>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="email" className="block text-sm font-medium text-pink-text">
               Email
             </label>
             <input
@@ -38,21 +38,21 @@ export default function LoginPage() {
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full px-3 py-2 border border-pink-border rounded-md shadow-sm focus:outline-none focus:ring-pink-primary focus:border-pink-primary"
               required
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              Password
+            <label htmlFor="password" className="block text-sm font-medium text-pink-text">
+              Пароль
             </label>
             <input
               id="password"
               type="password"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full px-3 py-2 border border-pink-border rounded-md shadow-sm focus:outline-none focus:ring-pink-primary focus:border-pink-primary"
               required
             />
           </div>
@@ -60,9 +60,9 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-pink-primary hover:bg-pink-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-primary disabled:opacity-50"
           >
-            {isLoading ? "Logging in..." : "Login"}
+            {isLoading ? "Вход..." : "Войти"}
           </button>
         </form>
       </div>

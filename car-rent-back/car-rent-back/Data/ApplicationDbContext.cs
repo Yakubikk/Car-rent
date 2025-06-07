@@ -28,6 +28,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.Property(e => e.LicensePlate).IsRequired();
             entity.Property(e => e.PricePerHour).HasColumnType("decimal(18,2)");
             entity.Property(e => e.PricePerDay).HasColumnType("decimal(18,2)");
+            entity.Property(e => e.Transmission).HasConversion<string>();
+            entity.Property(e => e.FuelType).HasConversion<string>();
         });
         
         // Настройка таблицы Rentals

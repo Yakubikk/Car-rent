@@ -40,6 +40,31 @@ public class RentalsController(ApplicationDbContext context, UserManager<Applica
             .Where(r => r.UserId == userId)
             .ToListAsync();
     }
+    
+    // GET: api/Rentals/Active
+    [HttpGet("Active")]
+    [Authorize(Policy = "RequireManagerOrAdminRole")]
+    public async Task<ActionResult<IEnumerable<Rental>>> GetActiveRentals()
+    {
+        return await context.Rentals
+            .Include(r => r.Car)
+            .Include(r => r.User)
+            .Where(r => r.Status == RentalStatus.Booked || r.Status == RentalStatus.Active)
+            .ToListAsync();
+    }
+    
+    // GET: api/Rentals/User/{userId:guid}
+    [HttpGet("User/{userId:guid}")]
+    [Authorize(Policy = "RequireManagerOrAdminRole")]
+    public async Task<ActionResult<IEnumerable<Rental>>> GetRentalsByUser(Guid userId)
+    {
+        var rentals = await context.Rentals
+            .Include(r => r.Car)
+            .Where(r => r.UserId == userId.ToString())
+            .ToListAsync();
+
+        return rentals;
+    }
 
     // GET: api/Rentals/5
     [HttpGet("{id:guid}")]
@@ -85,20 +110,27 @@ public class RentalsController(ApplicationDbContext context, UserManager<Applica
             return BadRequest("Автомобиль не доступен для аренды");
         }
 
-        // Вычисляем стоимость
-        var totalHours = (rentalDto.EndDateTime - rentalDto.StartDateTime).TotalHours;
-        var days = Math.Floor(totalHours / 24);
-        var remainingHours = totalHours % 24;
+        // Конвертируем даты в UTC формат
+        var startDateTimeUtc = DateTime.SpecifyKind(rentalDto.StartDateTime, DateTimeKind.Utc);
+        var endDateTimeUtc = DateTime.SpecifyKind(rentalDto.EndDateTime, DateTimeKind.Utc);
+
+        // Вычисляем стоимость поминутно
+        var totalMinutes = (endDateTimeUtc - startDateTimeUtc).TotalMinutes;
+        var days = Math.Floor(totalMinutes / (24 * 60));
+        var remainingMinutes = totalMinutes % (24 * 60);
         
-        var totalCost = (decimal)days * car.PricePerDay + (decimal)remainingHours * car.PricePerHour;
+        // Расчет стоимости: дни по дневной ставке + оставшиеся минуты по почасовой ставке, поделенной на 60
+        var totalCost = (decimal)days * car.PricePerDay + (decimal)remainingMinutes * (car.PricePerHour / 60);
+        // Округляем до двух знаков после запятой (копейки)
+        totalCost = Math.Round(totalCost, 2);
 
         var rental = new Rental
         {
             Id = Guid.NewGuid(),
             UserId = userId,
             CarId = car.Id,
-            StartDateTime = rentalDto.StartDateTime,
-            EndDateTime = rentalDto.EndDateTime,
+            StartDateTime = startDateTimeUtc,
+            EndDateTime = endDateTimeUtc,
             Status = RentalStatus.Booked,
             TotalCost = totalCost
         };
@@ -160,6 +192,48 @@ public class RentalsController(ApplicationDbContext context, UserManager<Applica
         await context.SaveChangesAsync();
 
         return NoContent();
+    }
+
+    // POST: api/Rentals/{id:guid}/Cancel
+    [HttpPost("{id:guid}/Cancel")]
+    public async Task<IActionResult> CancelRental(Guid id)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
+
+        var rental = await context.Rentals
+            .Include(r => r.Car)
+            .FirstOrDefaultAsync(r => r.Id == id);
+
+        if (rental == null)
+        {
+            return NotFound("Бронирование не найдено");
+        }
+
+        // Проверяем, что это бронирование принадлежит текущему пользователю или пользователь - админ/менеджер
+        if (rental.UserId != userId && !User.IsInRole("Admin") && !User.IsInRole("Manager"))
+        {
+            return Forbid();
+        }
+
+        // Проверяем, что бронирование можно отменить (оно в статусе "Забронировано")
+        if (rental.Status != RentalStatus.Booked)
+        {
+            return BadRequest("Можно отменить только бронирования в статусе 'Забронировано'");
+        }
+
+        // Меняем статус на "Отменено"
+        rental.Status = RentalStatus.Cancelled;
+        
+        // Делаем автомобиль снова доступным
+        rental.Car.IsAvailable = true;
+
+        await context.SaveChangesAsync();
+
+        return Ok(new { Message = "Бронирование успешно отменено" });
     }
 }
 

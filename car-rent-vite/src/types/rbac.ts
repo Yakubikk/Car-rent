@@ -12,6 +12,7 @@ export const Permission = {
   VIEW_USERS: "view_users",
   CREATE_USER: "create_user",
   EDIT_USER: "edit_user",
+  BAN_USER: "ban_user",
   DELETE_USER: "delete_user",
   
   // Регистрации
@@ -28,6 +29,7 @@ export const Permission = {
   // Бронирования
   VIEW_BOOKINGS: "view_bookings",
   CREATE_BOOKING: "create_booking",
+  CANCEL_BOOKING: "cancel_booking",
   EDIT_BOOKING: "edit_booking",
   DELETE_BOOKING: "delete_booking",
   VIEW_OWN_BOOKINGS: "view_own_bookings",
@@ -48,6 +50,7 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     Permission.CREATE_USER,
     Permission.EDIT_USER,
     Permission.DELETE_USER,
+    Permission.BAN_USER,
     Permission.VIEW_REGISTRATIONS,
     Permission.APPROVE_REGISTRATION,
     Permission.REJECT_REGISTRATION,
@@ -57,6 +60,7 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     Permission.DELETE_CAR,
     Permission.VIEW_BOOKINGS,
     Permission.CREATE_BOOKING,
+    Permission.CANCEL_BOOKING,
     Permission.EDIT_BOOKING,
     Permission.DELETE_BOOKING,
     Permission.VIEW_OWN_BOOKINGS,
@@ -69,6 +73,7 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     // Менеджер может управлять пользователями и регистрациями
     Permission.VIEW_USERS,
     Permission.EDIT_USER,
+    Permission.BAN_USER,
     Permission.VIEW_REGISTRATIONS,
     Permission.APPROVE_REGISTRATION,
     Permission.REJECT_REGISTRATION,
@@ -76,7 +81,9 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     Permission.CREATE_CAR,
     Permission.EDIT_CAR,
     Permission.VIEW_BOOKINGS,
+    Permission.VIEW_OWN_BOOKINGS,
     Permission.CREATE_BOOKING,
+    Permission.CANCEL_BOOKING,
     Permission.EDIT_BOOKING,
     Permission.VIEW_DASHBOARD,
     Permission.VIEW_ANALYTICS
@@ -86,6 +93,7 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     // Обычный пользователь может только бронировать автомобили
     Permission.VIEW_CARS,
     Permission.CREATE_BOOKING,
+    Permission.CANCEL_BOOKING,
     Permission.VIEW_OWN_BOOKINGS
   ],
   

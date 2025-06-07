@@ -271,6 +271,10 @@ namespace car_rent_back.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
+                    b.Property<string>("FuelType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("ImageUrl")
                         .HasColumnType("text");
 
@@ -290,6 +294,10 @@ namespace car_rent_back.Migrations
 
                     b.Property<decimal>("PricePerHour")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Transmission")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("Year")
                         .HasColumnType("integer");

@@ -5,7 +5,7 @@ export const AuthApi = {
   login: async (credentials: { email: string; password: string }) =>
     await apiClient.post<AuthResponse>("/login", credentials),
 
-  register: async (data: RegisterData) => await apiClient.post("/auth/register", data),
+  register: async (data: RegisterData) => await apiClient.post("/api/auth/register", data),
 
   getMe: () => apiClient.get<User>("/api/users/get-me"),
 

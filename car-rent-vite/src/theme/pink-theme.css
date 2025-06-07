@@ -1,0 +1,121 @@
+:root {
+  --pink-primary: #ff6b9d;
+  --pink-secondary: #ffb6c1;
+  --pink-light: #ffe4e8;
+  --pink-dark: #d94f7a;
+  --pink-hover: #ff88aa;
+  --pink-bg: #fff0f5;
+  --pink-text: #5a1c37;
+  --pink-border: #ffb6c1;
+  --pink-shadow: rgba(255, 107, 157, 0.2);
+}
+
+/* Основные элементы */
+body {
+  background-color: var(--pink-bg);
+  color: var(--pink-text);
+}
+
+/* Кнопки */
+.btn-primary {
+  background-color: var(--pink-primary);
+  color: white;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: var(--pink-hover);
+}
+
+.btn-secondary {
+  background-color: white;
+  color: var(--pink-primary);
+  border: 1px solid var(--pink-border);
+}
+
+.btn-secondary:hover {
+  background-color: var(--pink-light);
+}
+
+/* Карточки и контейнеры */
+.card, .container-box {
+  background-color: white;
+  border: 1px solid var(--pink-border);
+  box-shadow: 0 4px 6px var(--pink-shadow);
+}
+
+/* Навигационное меню */
+.nav-bar {
+  background-color: white;
+  border-bottom: 1px solid var(--pink-border);
+}
+
+/* Инпуты */
+input, select, textarea {
+  border: 1px solid var(--pink-border);
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--pink-primary);
+  box-shadow: 0 0 0 2px var(--pink-shadow);
+}
+
+/* Ссылки */
+a {
+  color: var(--pink-dark);
+}
+
+a:hover {
+  color: var(--pink-primary);
+}
+
+/* Таблицы */
+table th {
+  background-color: var(--pink-light);
+}
+
+table tr:nth-child(even) {
+  background-color: var(--pink-bg);
+}
+
+/* Утилиты для текста и фона */
+.text-primary {
+  color: var(--pink-primary);
+}
+
+.text-secondary {
+  color: var(--pink-dark);
+}
+
+.bg-primary {
+  background-color: var(--pink-primary);
+}
+
+.bg-secondary {
+  background-color: var(--pink-secondary);
+}
+
+.bg-light {
+  background-color: var(--pink-light);
+}
+
+/* Классы для Tailwind */
+.bg-pink-primary {
+  background-color: var(--pink-primary);
+}
+
+.bg-pink-light {
+  background-color: var(--pink-light);
+}
+
+.border-pink {
+  border-color: var(--pink-border);
+}
+
+.text-pink {
+  color: var(--pink-primary);
+}
+
+.shadow-pink {
+  box-shadow: 0 4px 6px var(--pink-shadow);
+}

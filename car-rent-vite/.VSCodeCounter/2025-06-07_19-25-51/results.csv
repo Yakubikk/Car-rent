@@ -1,0 +1,65 @@
+"filename", "language", "Properties", "TypeScript", "JSON with Comments", "JSON", "PostCSS", "TypeScript JSX", "XML", "JavaScript", "HTML", "Markdown", "comment", "blank", "total"
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/.env", "Properties", 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/README.md", "Markdown", 0, 0, 0, 0, 0, 0, 0, 0, 0, 45, 0, 10, 55
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/eslint.config.js", "JavaScript", 0, 0, 0, 0, 0, 0, 0, 27, 0, 0, 0, 2, 29
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/index.html", "HTML", 0, 0, 0, 0, 0, 0, 0, 0, 13, 0, 0, 1, 14
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/package-lock.json", "JSON", 0, 0, 0, 4547, 0, 0, 0, 0, 0, 0, 0, 1, 4548
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/package.json", "JSON", 0, 0, 0, 41, 0, 0, 0, 0, 0, 0, 0, 1, 42
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/public/vite.svg", "XML", 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/signalr-client-example.js", "JavaScript", 0, 0, 0, 0, 0, 0, 0, 80, 0, 0, 25, 19, 124
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/App.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 32, 0, 0, 0, 0, 3, 8, 43
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/api/auth.ts", "TypeScript", 0, 18, 0, 0, 0, 0, 0, 0, 0, 0, 1, 7, 26
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/api/cars.ts", "TypeScript", 0, 65, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 73
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/api/client.ts", "TypeScript", 0, 35, 0, 0, 0, 0, 0, 0, 0, 0, 3, 8, 46
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/api/rentals.ts", "TypeScript", 0, 58, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 65
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/api/users.ts", "TypeScript", 0, 41, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5, 47
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/app/(auth)/layout.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 1, 8
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/app/(auth)/login/page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 8, 72
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/app/(auth)/register/page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 229, 0, 0, 0, 0, 0, 11, 240
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/app/(main)/booking/confirmation/page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 182, 0, 0, 0, 0, 1, 18, 201
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/app/(main)/booking/new/page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 420, 0, 0, 0, 0, 16, 54, 490
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/app/(main)/cars/add/page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 336, 0, 0, 0, 0, 14, 32, 382
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/app/(main)/cars/edit/[id]/page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 365, 0, 0, 0, 0, 16, 37, 418
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/app/(main)/catalog/page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 403, 0, 0, 0, 0, 3, 34, 440
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/app/(main)/dashboard/page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 159, 0, 0, 0, 0, 5, 8, 172
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/app/(main)/my-rentals/page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 259, 0, 0, 0, 0, 12, 23, 294
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/app/(main)/page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 200, 0, 0, 0, 0, 5, 8, 213
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/app/(main)/rentals/page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 437, 0, 0, 0, 0, 23, 39, 499
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/app/(main)/users/guests/page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 2, 11
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/app/(main)/users/new-registration/[email]/page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 135, 0, 0, 0, 0, 2, 11, 148
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/app/(main)/users/new-registration/page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 1, 13
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/app/(main)/users/page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 262, 0, 0, 0, 0, 4, 19, 285
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/app/layout.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 32, 0, 0, 0, 0, 1, 6, 39
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/app/not-found.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 30, 0, 0, 0, 0, 0, 4, 34
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/app/style.css", "PostCSS", 0, 0, 0, 0, 37, 0, 0, 0, 0, 0, 0, 3, 40
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/app/unauthorized.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/app/unauthorized/page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 47, 0, 0, 0, 0, 0, 5, 52
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/assets/react.svg", "XML", 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/components/LoadingSpinner.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 33, 0, 0, 0, 0, 1, 6, 40
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/components/RegistrationToast.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 68, 0, 0, 0, 0, 3, 6, 77
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/components/guest-users/GuestUsersTable.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 129, 0, 0, 0, 0, 4, 17, 150
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/components/navigation/RoleBasedMenu.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 206, 0, 0, 0, 0, 3, 10, 219
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/components/rbac/PermissionGate.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 30, 0, 0, 0, 0, 2, 8, 40
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/components/rbac/ProtectedRoute.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 40, 0, 0, 0, 0, 5, 9, 54
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/components/rbac/RoleBasedRoute.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 33, 0, 0, 0, 0, 4, 8, 45
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/components/rbac/withRole-fixed.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/components/rbac/withRole.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 52, 0, 0, 0, 0, 4, 13, 69
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/config/routes.ts", "TypeScript", 0, 45, 0, 0, 0, 0, 0, 0, 0, 0, 4, 7, 56
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/hooks/usePermissions.ts", "TypeScript", 0, 76, 0, 0, 0, 0, 0, 0, 0, 0, 2, 19, 97
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/index.css", "PostCSS", 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 3, 12
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/main.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 2, 11
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/router/Router.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 2, 5
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/router/build-routes.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 96, 0, 0, 0, 0, 11, 24, 131
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/services/signalR.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 33, 0, 0, 0, 0, 7, 10, 50
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/stores/auth.ts", "TypeScript", 0, 77, 0, 0, 0, 0, 0, 0, 0, 0, 8, 10, 95
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/theme/pink-theme.css", "PostCSS", 0, 0, 0, 0, 89, 0, 0, 0, 0, 0, 9, 24, 122
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/types/auth.ts", "TypeScript", 0, 38, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 42
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/types/car.ts", "TypeScript", 0, 26, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 29
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/types/rbac.ts", "TypeScript", 0, 88, 0, 0, 0, 0, 0, 0, 0, 0, 10, 13, 111
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/utils/rbac.ts", "TypeScript", 0, 186, 0, 0, 0, 0, 0, 0, 0, 0, 72, 42, 300
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/src/vite-env.d.ts", "TypeScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/tsconfig.app.json", "JSON", 0, 0, 0, 27, 0, 0, 0, 0, 0, 0, 3, 4, 34
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/tsconfig.json", "JSON with Comments", 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 1, 8
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/tsconfig.node.json", "JSON", 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 2, 3, 26
+"/home/yakubikk/Diplom/Car-rent/car-rent-vite/vite.config.ts", "TypeScript", 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 15
+"Total", "-", 1, 765, 7, 4636, 135, 4352, 2, 107, 13, 45, 291, 654, 11008

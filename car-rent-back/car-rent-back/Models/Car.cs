@@ -1,5 +1,25 @@
 namespace car_rent_back.Models;
 
+using System.Text.Json.Serialization;
+
+public enum TransmissionType
+{
+    Manual,
+    Automatic,
+    SemiAutomatic,
+    CVT,
+    Robot
+}
+
+public enum FuelType
+{
+    Petrol,
+    Diesel,
+    Gas,
+    Hybrid,
+    Electric
+}
+
 public class Car
 {
     public Guid Id { get; set; }
@@ -14,6 +34,13 @@ public class Car
     public string? ImageUrl { get; set; }
     public string? Description { get; set; }
     
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public TransmissionType Transmission { get; set; }
+    
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public FuelType FuelType { get; set; }
+    
     // Навигационные свойства
+    [JsonIgnore]
     public virtual ICollection<Rental> Rentals { get; set; } = new List<Rental>();
 }

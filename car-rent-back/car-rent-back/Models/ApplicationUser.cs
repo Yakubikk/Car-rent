@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices.JavaScript;
 using Microsoft.AspNetCore.Identity;
 
 namespace car_rent_back.Models;

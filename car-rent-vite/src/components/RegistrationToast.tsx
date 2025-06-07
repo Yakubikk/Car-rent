@@ -1,6 +1,6 @@
 import toast, { type Toast } from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
-import sound from "@/assets/ukh-ty-bliadeg-deg.mp3";
+import sound from "@/assets/multyashnoe-kryakanie.mp3";
 import { useEffect } from "react";
 import useSound from "use-sound";
 import { UserPlus, Clock, X, ArrowRight } from "lucide-react";
@@ -14,8 +14,8 @@ export const RegistrationToast = ({ data, t }: { data: { email: string; date: st
 
   useEffect(() => {
     play();
-    // const timer = setTimeout(play, 450);
-    // return () => clearTimeout(timer);
+    const timer = setTimeout(play, 450);
+    return () => clearTimeout(timer);
   }, [play]);
 
   const handleViewDetails = (email: string) => {

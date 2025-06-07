@@ -4,6 +4,7 @@ using car_rent_back.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,14 @@ builder.Services.AddAuthorizationBuilder()
     .AddPolicy("RequireManagerRole", policy => policy.RequireRole("Manager"))
     .AddPolicy("RequireManagerOrAdminRole", policy => policy.RequireRole("Manager", "Admin"))
     .AddPolicy("RequireUserRole", policy => policy.RequireRole("User"));
+
+// Add services to the container.
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+
+// Удаляем предыдущую конфигурацию SpaStaticFiles, так как она не требуется
+// и заменяем на стандартную конфигурацию StaticFiles
+builder.Services.AddDirectoryBrowser();
 
 // Настраиваем CORS
 builder.Services.AddCors(options =>
@@ -120,6 +129,24 @@ if (app.Environment.IsDevelopment())
 
 // Используем CORS
 app.UseCors("AllowAll");
+
+// Используем статические файлы
+app.UseStaticFiles();
+
+// Настраиваем обслуживание файлов из директории wwwroot/avatars напрямую через URL /avatars
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(app.Environment.ContentRootPath, "wwwroot", "avatars")),
+    RequestPath = "/avatars"
+});
+
+// Создаем директорию wwwroot/avatars, если она не существует
+var avatarsPath = Path.Combine(app.Environment.ContentRootPath, "wwwroot", "avatars");
+if (!Directory.Exists(avatarsPath))
+{
+    Directory.CreateDirectory(avatarsPath);
+}
 
 // Добавляем Identity эндпоинты
 app.MapIdentityApi<ApplicationUser>();
