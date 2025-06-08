@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/stores/auth";
 import type { RegisterData } from "@/types/auth";
+import { Link } from "react-router-dom";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState<RegisterData>({
@@ -186,6 +187,12 @@ export default function RegisterPage() {
             {isLoading ? "Регистрация..." : "Зарегистрироваться"}
           </button>
         </form>
+        <p className="mt-4 text-sm text-center text-pink-text">
+          Уже есть аккаунт?{" "}
+          <Link to="/login" className="text-pink-primary hover:underline">
+            Войти
+          </Link>
+        </p>
       </div>
     </div>
   );

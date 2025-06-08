@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { LoginData } from "@/types/auth";
 import { useAuthStore } from "@/stores/auth";
+import { Link } from "react-router-dom";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState<LoginData>({
@@ -65,6 +66,12 @@ export default function LoginPage() {
             {isLoading ? "Вход..." : "Войти"}
           </button>
         </form>
+        <p className="mt-4 text-sm text-center text-pink-text">
+          Нет аккаунта?{" "}
+          <Link to="/register" className="text-pink-primary hover:underline">
+            Зарегистрироваться
+          </Link>
+        </p>
       </div>
     </div>
   );
