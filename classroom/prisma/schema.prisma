@@ -1,0 +1,197 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model
+model User {
+  id               String    @id @default(uuid())
+  email            String    @unique
+  password         String
+  name             String
+  role             Role      @default(STUDENT)
+  profile          Profile?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  
+  // Relations
+  ownedClasses     Class[]   @relation("ClassOwner")
+  enrolledClasses  Enrollment[]
+  assignments      Assignment[] @relation("AssignmentCreator")
+  submissions      Submission[]
+  posts            Post[]
+  comments         Comment[]
+}
+
+// User profile model
+model Profile {
+  id               String    @id @default(uuid())
+  userId           String    @unique
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  avatar           String?
+  bio              String?
+  phone            String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+// Class model
+model Class {
+  id               String    @id @default(uuid())
+  name             String
+  description      String?
+  subject          String?
+  coverImage       String?
+  enrollmentCode   String    @unique
+  isActive         Boolean   @default(true)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  
+  // Relations
+  ownerId          String
+  owner            User      @relation("ClassOwner", fields: [ownerId], references: [id])
+  enrollments      Enrollment[]
+  assignments      Assignment[]
+  posts            Post[]
+}
+
+// Enrollment model (students in classes)
+model Enrollment {
+  id               String    @id @default(uuid())
+  userId           String
+  classId          String
+  role             Role      @default(STUDENT)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  
+  // Relations
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  class            Class     @relation(fields: [classId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, classId])
+}
+
+// Assignment model
+model Assignment {
+  id               String    @id @default(uuid())
+  title            String
+  description      String
+  dueDate          DateTime?
+  totalPoints      Int       @default(100)
+  isPublished      Boolean   @default(false)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  
+  // Relations
+  classId          String
+  class            Class     @relation(fields: [classId], references: [id], onDelete: Cascade)
+  creatorId        String
+  creator          User      @relation("AssignmentCreator", fields: [creatorId], references: [id])
+  submissions      Submission[]
+  attachments      AssignmentAttachment[]
+}
+
+// Assignment Attachment model
+model AssignmentAttachment {
+  id               String    @id @default(uuid())
+  filename         String
+  fileUrl          String
+  fileType         String
+  createdAt        DateTime  @default(now())
+  
+  // Relations
+  assignmentId     String
+  assignment       Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+}
+
+// Submission model
+model Submission {
+  id               String    @id @default(uuid())
+  content          String?
+  grade            Int?
+  feedback         String?
+  isLate           Boolean   @default(false)
+  submittedAt      DateTime  @default(now())
+  gradedAt         DateTime?
+  
+  // Relations
+  assignmentId     String
+  assignment       Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  studentId        String
+  student          User      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  attachments      SubmissionAttachment[]
+  
+  @@unique([assignmentId, studentId])
+}
+
+// Submission Attachment model
+model SubmissionAttachment {
+  id               String    @id @default(uuid())
+  filename         String
+  fileUrl          String
+  fileType         String
+  createdAt        DateTime  @default(now())
+  
+  // Relations
+  submissionId     String
+  submission       Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+}
+
+// Post model (for class feed)
+model Post {
+  id               String    @id @default(uuid())
+  title            String?
+  content          String
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  
+  // Relations
+  classId          String
+  class            Class     @relation(fields: [classId], references: [id], onDelete: Cascade)
+  authorId         String
+  author           User      @relation(fields: [authorId], references: [id])
+  comments         Comment[]
+  attachments      PostAttachment[]
+}
+
+// Post Attachment model
+model PostAttachment {
+  id               String    @id @default(uuid())
+  filename         String
+  fileUrl          String
+  fileType         String
+  createdAt        DateTime  @default(now())
+  
+  // Relations
+  postId           String
+  post             Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+// Comment model
+model Comment {
+  id               String    @id @default(uuid())
+  content          String
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  
+  // Relations
+  postId           String
+  post             Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId         String
+  author           User      @relation(fields: [authorId], references: [id])
+}
+
+// Role enum
+enum Role {
+  ADMIN
+  TEACHER
+  STUDENT
+}
